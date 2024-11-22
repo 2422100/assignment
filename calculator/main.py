@@ -1,5 +1,5 @@
 import flet as ft
-
+import math
 
 class CalcButton(ft.ElevatedButton):
     def __init__(self, text, button_clicked, expand=1):
@@ -45,6 +45,14 @@ class CalculatorApp(ft.Container):
         self.content = ft.Column(
             controls=[
                 ft.Row(controls=[self.result], alignment="end"),
+                ft.Row(
+                    controls=[
+                        ExtraActionButton(text="sin", button_clicked=self.button_clicked),
+                        ExtraActionButton(text="cos", button_clicked=self.button_clicked),
+                        ExtraActionButton(text="tan", button_clicked=self.button_clicked),
+                        ExtraActionButton(text="rad", button_clicked=self.button_clicked),
+                    ]
+                ),
                 ft.Row(
                     controls=[
                         ExtraActionButton(
@@ -99,6 +107,29 @@ class CalculatorApp(ft.Container):
         if self.result.value == "Error" or data == "AC":
             self.result.value = "0"
             self.reset()
+
+        elif data in ("sin", "cos", "tan"):
+            try:
+                value = float(self.result.value)
+                if not self.rad_mode:
+                    value = math.radians(value)
+                
+                if data == "sin":
+                    self.result.value = self.format_number(math.sin(value))
+                elif data == "cos":
+                    self.result.value = self.format_number(math.cos(value))
+                elif data == "tan":
+                    self.result.value = self.format_number(math.tan(value))
+            except:
+                self.result.value = "Error"
+            self.new_operand = True
+
+        elif data == "rad":
+            self.rad_mode = not self.rad_mode
+            if self.rad_mode:
+                e.control.bgcolor = ft.colors.ORANGE
+            else:
+                e.control.bgcolor = ft.colors.BLUE_GREY_100
 
         elif data in ("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."):
             if self.result.value == "0" or self.new_operand == True:
@@ -166,6 +197,7 @@ class CalculatorApp(ft.Container):
         self.operator = "+"
         self.operand1 = 0
         self.new_operand = True
+        self.rad_mode = False
 
 
 def main(page: ft.Page):

@@ -38,7 +38,8 @@ def main(page: ft.Page):
         weight="bold"
     )
     description_text = ft.Text(value="", size=20)
-    temperature_text = ft.Text(value="", size=20)
+    wind_text = ft.Text(value="", size=20)
+    wave_text = ft.Text(value="", size=20)
     weather_icon = ft.Image(src="", width=100, height=100, visible=False)
     loading_indicator = ft.ProgressRing(visible=False)
 
@@ -47,7 +48,8 @@ def main(page: ft.Page):
         controls=[
             city_text,
             description_text,
-            temperature_text,
+            wind_text,
+            wave_text,
             weather_icon
         ],
         spacing=10
@@ -79,25 +81,32 @@ def main(page: ft.Page):
                     raise ValueError("areas データが見つかりません。")
 
                 weather_description = weathers[0].get('weathers', ["データなし"])[0]
+                weather_wind = weathers[0].get('winds', ["データなし"])[0]
+                weather_wave = weathers[0].get('waves', ["データなし"])[0]
                 # JMA APIでは直接的な温度データが含まれていない場合が多い
                 # 必要に応じて別のAPIやデータソースを使用して温度情報を取得する
-                weather_temp = "データなし"
 
                 # 天気情報を更新
                 city_text.value = f"{city_name} の天気"
                 description_text.value = f"状況: {weather_description}"
-                temperature_text.value = f"温度: {weather_temp}"
+                wind_text.value = f"風: {weather_wind}"
+                wave_text.value = f"波: {weather_wave}"
+
                 weather_icon.visible = False  # JMA APIには公式のアイコンがないため非表示
             else:
                 city_text.value = "エラー"
                 description_text.value = f"天気情報の取得に失敗しました。ステータスコード: {response.status_code}"
                 description_text.size = 16
-                temperature_text.value = ""
+                wind_text.value = f"天気情報の取得に失敗しました。ステータスコード: {response.status_code}"
+                wind_text.size = 16
+                wave_text.value = f"天気情報の取得に失敗しました。ステータスコード: {response.status_code}"
+                wave_text.size = 16
                 weather_icon.visible = False
         except Exception as ex:
             city_text.value = "エラー"
             description_text.value = f"エラーが発生しました: {ex}"
-            temperature_text.value = ""
+            wind_text.value = f"エラーが発生しました: {ex}"
+            wave_text.value = f"エラーが発生しました: {ex}"
             weather_icon.visible = False
         finally:
             # ローディングインディケータを非表示
@@ -113,7 +122,8 @@ def main(page: ft.Page):
             else:
                 city_text.value = "エラー"
                 description_text.value = "無効な地域コードです。"
-                temperature_text.value = ""
+                wind_text.value = ""
+                wave_text.value = ""
                 weather_icon.visible = False
                 page.update()
 

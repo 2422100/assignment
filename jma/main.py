@@ -38,7 +38,7 @@ for center_name, center_id in CENTER_CODES.items():
             office_names.append(office_name)
     CENTER_TO_OFFICES[center_name] = office_names
 
-# デバッグ用にCENTER_CODESとCENTER_TO_OFFICESを表示（開発中のみ）
+# デバッグ用にCENTER_CODESとCENTER_TO_OFFICESを表示
 print("CENTER_CODES:", CENTER_CODES)
 print("CENTER_TO_OFFICES:", CENTER_TO_OFFICES)
 
